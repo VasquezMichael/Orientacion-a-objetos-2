@@ -1,0 +1,14 @@
+# Maven / build output
+target/
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# (Opcional) Eclipse workspace metadata / local config
+.settings/
+.classpath
+.project
