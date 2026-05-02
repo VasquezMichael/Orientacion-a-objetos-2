@@ -27,6 +27,4 @@ public class Temporario extends EmpleadoConFamilia{
 	
 
 
-
-
 }
