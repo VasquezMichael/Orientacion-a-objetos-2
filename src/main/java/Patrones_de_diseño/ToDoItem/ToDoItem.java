@@ -1,5 +1,6 @@
 package Patrones_de_diseño.ToDoItem;
 import java.time.*;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 public class ToDoItem {
@@ -8,10 +9,17 @@ public class ToDoItem {
 	private LocalDateTime fechaInicio;
 	private LocalDateTime fechaFin;
 	private List<String> comments;
-	public ToDoItem() {
-		// TODO Auto-generated constructor stub
+
+	public EstadoItem getEstado() {
+		return estado;
 	}
-	
+
+
+	public void setEstado(EstadoItem estado) {
+		this.estado = estado;
+	}
+
+
 	public void setEstadoItem(EstadoItem estado) {
 		this.estado = estado;
 	}
@@ -35,6 +43,10 @@ public class ToDoItem {
 
 	public void agregarComentario(String comment) {
 		this.comments.add(comment);
+	}
+
+	public List<String> getComments() {
+		return Collections.unmodifiableList(this.comments);
 	}
 	
 	public ToDoItem(String name) {

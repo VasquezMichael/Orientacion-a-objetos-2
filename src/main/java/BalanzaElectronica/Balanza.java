@@ -10,7 +10,7 @@ public class Balanza {
 	private List<Producto> productos;
 	
 	public Balanza() {
-		// TODO Auto-generated constructor stub
+		this.ponerEnCero();
 	}
 
 	public double getPrecioTotal() {
@@ -38,6 +38,9 @@ public class Balanza {
 	}
 	
 	public void ponerEnCero() {
+		this.cantidadDeProductos = 0;
+		this.precioTotal = 0;
+		this.pesoTotal = 0;
 		this.productos = new ArrayList<Producto>();
 	}
 	
@@ -51,6 +54,9 @@ public class Balanza {
 	
 	public void agregarProducto(Producto producto) {
 		this.productos.add(producto);
+		this.cantidadDeProductos = this.productos.size();
+		this.precioTotal = this.precioTotal();
+		this.pesoTotal = this.pesoTotal();
 	}
 	
 	public List<Producto> getProductos(){
