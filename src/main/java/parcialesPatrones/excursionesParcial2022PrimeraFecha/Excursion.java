@@ -1,7 +1,9 @@
 package parcialesPatrones.excursionesParcial2022PrimeraFecha;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Excursion {
 	private EstadoExcursion estado;
@@ -16,7 +18,22 @@ public class Excursion {
 	private List<Usuario> listaEspera;
 	
 	public Excursion() {
-		// TODO Auto-generated constructor stub
+		this.inscriptos = new ArrayList<>();
+		this.listaEspera = new ArrayList<>();
+		this.estado = new EstadoSinCupoMinimo();
+	}
+
+	public Excursion(String nombre, LocalDate fechaInicio, LocalDate fechaFin, String puntoEncuentro, double costo,
+			int cupoMinimo, int cupoMaximo) {
+		this();
+		this.nombre = nombre;
+		this.fechaInicio = fechaInicio;
+		this.fechaFin = fechaFin;
+		this.puntoEncuentro = puntoEncuentro;
+		this.costo = costo;
+		this.cupoMinimo = cupoMinimo;
+		this.cupoMaximo = cupoMaximo;
+		this.estado = new EstadoSinCupoMinimo();
 	}
 
 
@@ -26,16 +43,44 @@ public class Excursion {
 	
 	
 	private String obtenerInformacionBasica() {
-		return "Excursion [nombre=" + nombre + ", fechaInicio=" + fechaInicio + ", fechaFin=" + fechaFin
-				+ ", puntoEncuentro=" + puntoEncuentro + ", costo=" + costo + "]";
+		return "Nombre: " + nombre + ", costo: " + costo + ", fecha de inicio: " + fechaInicio + ", fecha de fin: "
+				+ fechaFin + ", punto de encuentro: " + puntoEncuentro;
 	}
 	
 
 	public String obtenerInformacion() {
-		return null;
+		return this.obtenerInformacionBasica() + this.estado.obtenerInformacion(this);
 	}
 	
+	public String cantidadFaltanteParaCupoMinimo() {
+		return ", usuarios faltantes para alcanzar el cupo minimo: " + (cupoMinimo - this.inscriptos.size());
+	}
+	
+	public String cantidadFaltanteParaCupoMaximo() {
+		return ", usuarios faltantes para alcanzar el cupo maximo: " + (cupoMaximo - this.inscriptos.size());
+	}
 
+	public String mailsInscriptos() {
+		return ", mails de usuarios inscriptos: " + this.inscriptos.stream().map(Usuario::getEmail)
+				.collect(Collectors.joining(", "));
+	}
+	
+	public void agregarInscripto(Usuario usuario) {
+		this.inscriptos.add(usuario);
+	}
+	
+	public void agregarAListaEspera(Usuario usuario) {
+		this.listaEspera.add(usuario);
+	}
+	
+	public boolean alcancoCupoMinimo() {
+		return this.inscriptos.size() >= this.cupoMinimo;
+	}
+	
+	public boolean alcanzoCupoMaximo() {
+		return this.inscriptos.size() >= this.cupoMaximo;
+	}
+	
 	public EstadoExcursion getEstado() {
 		return estado;
 	}
