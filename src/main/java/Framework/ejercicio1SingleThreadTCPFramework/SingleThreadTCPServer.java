@@ -61,31 +61,87 @@ public abstract class SingleThreadTCPServer {
 
     
 
-    private final void handleClient(Socket clientSocket) {
+    protected final void handleClient(Socket clientSocket) {
 
-    	try (
-    			PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-    			BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));) {
-    		String inputLine;
-    		while ((inputLine = in.readLine()) != null) {
-    			System.out.println("Received message: " + inputLine + " from "
-    					+ clientSocket.getInetAddress().getHostAddress() + ":" + clientSocket.getPort());
+        try (
+            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(
+                new InputStreamReader(clientSocket.getInputStream())
+            );
+        ) {
+            this.conexionAbierta(clientSocket);
 
-    			if (inputLine.equalsIgnoreCase("")) {
-    				break; // Client requested to close the connection
-    			}
-    			handleMessage(inputLine, out);
-    		}
-    		System.out.println("Connection closed with " + clientSocket.getInetAddress().getHostAddress() + ":"
-    				+ clientSocket.getPort());
-    	} catch (IOException e) {
-    		System.err.println("Problem with communication with client: " + e.getMessage());
-    	} finally {
-    		try {
-    			clientSocket.close();
-    		} catch (IOException e) {
-    			System.err.println("Error closing socket: " + e.getMessage());
-    		}
-    	}
+            String inputLine;
+
+            while ((inputLine = this.leerMensaje(in)) != null) {
+                this.mensajeRecibido(inputLine, clientSocket);
+
+                if (this.finDeSesion(inputLine, clientSocket)) {
+                    break;
+                }
+
+                this.antesDeProcesarMensaje(inputLine, clientSocket);
+
+                this.handleMessage(inputLine, out);
+
+                this.despuesDeProcesarMensaje(inputLine, clientSocket);
+            }
+
+            this.conexionCerrada(clientSocket);
+
+        } catch (IOException e) {
+            this.problemaDeComunicacion(e, clientSocket);
+
+        } finally {
+            this.cerrarConexion(clientSocket);
+        }
     }
+    
+
+protected void conexionAbierta(Socket clientSocket) {
+    System.out.println("Connection opened with "
+            + clientSocket.getInetAddress().getHostAddress() + ":"
+            + clientSocket.getPort());
+}
+
+protected String leerMensaje(BufferedReader in) throws IOException {
+    return in.readLine();
+}
+
+protected void mensajeRecibido(String inputLine, Socket clientSocket) {
+    System.out.println("Received message: " + inputLine + " from "
+            + clientSocket.getInetAddress().getHostAddress() + ":"
+            + clientSocket.getPort());
+}
+
+protected boolean finDeSesion(String inputLine, Socket clientSocket) {
+    return inputLine.isEmpty();
+}
+
+protected void antesDeProcesarMensaje(String inputLine, Socket clientSocket) {
+    // Hook opcional.
+}
+
+protected void despuesDeProcesarMensaje(String inputLine, Socket clientSocket) {
+    // Hook opcional.
+}
+
+protected void conexionCerrada(Socket clientSocket) {
+    System.out.println("Connection closed with "
+            + clientSocket.getInetAddress().getHostAddress() + ":"
+            + clientSocket.getPort());
+}
+
+protected void problemaDeComunicacion(IOException e, Socket clientSocket) {
+    System.err.println("Problem with communication with client: " + e.getMessage());
+}
+
+protected void cerrarConexion(Socket clientSocket) {
+    try {
+        clientSocket.close();
+    } catch (IOException e) {
+        System.err.println("Error closing socket: " + e.getMessage());
+    }
+}
+    
 }
