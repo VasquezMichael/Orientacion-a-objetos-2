@@ -1,0 +1,26 @@
+Este codigo muestra posibles instanciaciones del framework Framework.tcp.server.reply.
+
+Desde Eclipse puede ejecutar estas clases como Java Application:
+
+- Framework.EchoApp
+- Framework.MultiEchoApp
+- Framework.TestApp
+
+Debe pasar un unico argumento de programa: el puerto donde escuchara el servidor.
+Ejemplo: 5055
+
+Desde la raiz del proyecto Maven tambien puede compilar con:
+
+mvn compile
+
+Y ejecutar el EchoServer single-thread con:
+
+java -cp target/classes Framework.EchoApp 5055
+
+Para el EchoServer multi-thread:
+
+java -cp target/classes Framework.MultiEchoApp 5055
+
+Para el VoidServer:
+
+java -cp target/classes Framework.TestApp 5055
